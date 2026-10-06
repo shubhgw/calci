@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scientific Calculator</title>
+    <!-- Using math.js for accurate and advanced mathematical evaluations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <!-- Modern Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="calculator">
+      <div class="brand-area">
+        <div class="brand-left">
+          <span class="brand-name">CASIO</span>
+          <span class="brand-model">shubhgw & Gemini</span>
+        </div>
+        <span style="font-size: 12px; font-weight: 600"></span>
+      </div>
+
+      <div class="screen-container">
+        <div class="screen">
+          <div class="screen-expression" id="expression"></div>
+          <div class="screen-result" id="result">0</div>
+        </div>
+      </div>
+
+      <!-- Top control keys -->
+      <div class="top-controls">
+        <div class="btn-container">
+          <div class="label">SHIFT</div>
+          <button class="btn-silver">S</button>
+        </div>
+        <div class="btn-container">
+          <div class="label alpha">ALPHA</div>
+          <button class="btn-silver">A</button>
+        </div>
+
+        <div class="d-pad">
+          <button class="d-up">▲</button>
+          <button class="d-down">▼</button>
+          <button class="d-left">◄</button>
+          <button class="d-right">►</button>
+        </div>
+
+        <div class="btn-container">
+          <div class="label">MODE</div>
+          <button class="btn-silver">M</button>
+        </div>
+        <div class="btn-container">
+          <div class="label">ON</div>
+          <button class="btn-silver" onclick="clearAll()">ON</button>
+        </div>
+      </div>
+
+      <!-- Scientific Function Keys (6 Columns to match Casio exactly) -->
+      <div class="sci-keys">
+        <!-- Row 1: CALC, Integral, x^-1, log_ab (positioned around d-pad) -->
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('calc')">CALC</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('integral(')">
+            ∫dx
+          </button>
+        </div>
+        <div class="empty-space"></div>
+        <!-- D-pad spacing -->
+        <div class="empty-space"></div>
+        <!-- D-pad spacing -->
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('^-1')">x⁻¹</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('log(')">log_■</button>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('/')">■/□</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('sqrt(')">√</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('^2')">x²</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('^')">x^</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('log10(')">log</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('ln(')">ln</button>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('-')">(-)</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('deg')">°'</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('hyp')">hyp</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('sin(')">sin</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('cos(')">cos</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('tan(')">tan</button>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="btn-container">
+          <button class="btn-black" onclick="recallMemory()">RCL</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="formatEngineering()">ENG</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput('(')">(</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="appendInput(')')">)</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="toggleSD()">S⇔D</button>
+        </div>
+        <div class="btn-container">
+          <button class="btn-black" onclick="addToMemory()">M+</button>
+        </div>
+      </div>
+
+      <!-- Main Numpad (5 Columns) -->
+      <div class="main-keys">
+        <button class="btn-num" onclick="appendInput('7')">7</button>
+        <button class="btn-num" onclick="appendInput('8')">8</button>
+        <button class="btn-num" onclick="appendInput('9')">9</button>
+        <button class="btn-del-ac" onclick="deleteLast()">DEL</button>
+        <button class="btn-del-ac" onclick="clearAll()">AC</button>
+
+        <button class="btn-num" onclick="appendInput('4')">4</button>
+        <button class="btn-num" onclick="appendInput('5')">5</button>
+        <button class="btn-num" onclick="appendInput('6')">6</button>
+        <button class="btn-num" onclick="appendInput('*')">×</button>
+        <button class="btn-num" onclick="appendInput('/')">÷</button>
+
+        <button class="btn-num" onclick="appendInput('1')">1</button>
+        <button class="btn-num" onclick="appendInput('2')">2</button>
+        <button class="btn-num" onclick="appendInput('3')">3</button>
+        <button class="btn-num" onclick="appendInput('+')">+</button>
+        <button class="btn-num" onclick="appendInput('-')">-</button>
+
+        <button class="btn-num" onclick="appendInput('0')">0</button>
+        <button class="btn-num" onclick="appendInput('.')">.</button>
+        <button class="btn-num" onclick="appendInput('*10^')">×10ˣ</button>
+        <button class="btn-num" onclick="appendInput('Ans')">Ans</button>
+        <button
+          class="btn-num"
+          onclick="calculateResult()"
+          style="
+            background: linear-gradient(180deg, #999 0%, #777 100%);
+            color: white;
+            box-shadow:
+              0px 4px 0px #555,
+              0px 5px 8px rgba(0, 0, 0, 0.3);
+          "
+        >
+          =
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let expressionString = "";
+      let lastResult = "0";
+      let memory = 0;
+      let isFractionDisplay = false;
+      let currentRawNumericResult = 0;
+
+      const exprDisplay = document.getElementById("expression");
+      const resultDisplay = document.getElementById("result");
+
+      function updateDisplay() {
+        let formattedExpr = expressionString
+          .replace(/\*/g, "×")
+          .replace(/\//g, "÷")
+          .replace(/sqrt\(/g, "√(");
+        exprDisplay.innerText = formattedExpr;
+      }
+
+      function appendInput(val) {
+        if (val === "Ans") {
+          expressionString += lastResult;
+        } else {
+          expressionString += val;
+        }
+        isFractionDisplay = false; // Reset format on new input
+        updateDisplay();
+      }
+
+      function clearAll() {
+        expressionString = "";
+        resultDisplay.innerText = "0";
+        isFractionDisplay = false;
+        updateDisplay();
+      }
+
+      function deleteLast() {
+        if (expressionString.length > 0) {
+          expressionString = expressionString.slice(0, -1);
+          updateDisplay();
+        }
+      }
+
+      // Memory Functions
+      function addToMemory() {
+        calculateResult();
+        if (resultDisplay.innerText !== "Math Error") {
+          memory += parseFloat(currentRawNumericResult);
+          exprDisplay.innerText = "M+";
+        }
+      }
+
+      function recallMemory() {
+        expressionString += memory;
+        updateDisplay();
+      }
+
+      // S<=>D Toggle Fraction/Decimal
+      function toggleSD() {
+        if (
+          resultDisplay.innerText === "Math Error" ||
+          resultDisplay.innerText === "0"
+        )
+          return;
+
+        try {
+          if (!isFractionDisplay) {
+            // Convert to fraction
+            let frac = math.fraction(currentRawNumericResult);
+            resultDisplay.innerText = `${frac.n} ┘ ${frac.d}`;
+            isFractionDisplay = true;
+          } else {
+            // Convert to Decimal
+            resultDisplay.innerText = math.format(currentRawNumericResult, {
+              precision: 12,
+            });
+            isFractionDisplay = false;
+          }
+        } catch (e) {
+          // If conversion fails, keep as is
+        }
+      }
+
+      // Engineering Formatting
+      function formatEngineering() {
+        if (
+          resultDisplay.innerText === "Math Error" ||
+          resultDisplay.innerText === "0"
+        )
+          return;
+        resultDisplay.innerText = math.format(currentRawNumericResult, {
+          notation: "engineering",
+          precision: 6,
+        });
+        isFractionDisplay = false;
+      }
+
+      function calculateResult() {
+        if (expressionString.trim() === "") return;
+
+        try {
+          let evalString = expressionString
+            .replace(/×/g, "*")
+            .replace(/÷/g, "/");
+
+          let result = math.evaluate(evalString);
+
+          // Store raw number for S<=>D conversions
+          currentRawNumericResult = result;
+
+          // Handle decimal precision formatting
+          result = math.format(result, { precision: 12 });
+
+          resultDisplay.innerText = result;
+          lastResult = result;
+          isFractionDisplay = false;
+        } catch (error) {
+          resultDisplay.innerText = "Math Error";
+        }
+      }
+
+      // Keyboard support for faster typing
+      document.addEventListener("keydown", (event) => {
+        const key = event.key;
+        if (/[0-9\+\-\*\/\(\)\.\^]/.test(key)) {
+          appendInput(key);
+        } else if (key === "Enter") {
+          calculateResult();
+        } else if (key === "Backspace") {
+          deleteLast();
+        } else if (key === "Escape") {
+          clearAll();
+        }
+      });
+    </script>
+  </body>
+</html>
